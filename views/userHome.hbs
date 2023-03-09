@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Map</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js">
+    </script>
+</head>
+
+<body>
+    <div class="row">
+        <div class="d-flex flex-column flex-shrink-0 p-3 tex-white bg-dark col-lg-2">
+            <ul class="nav nav-pills flex-column mb-auto">
+
+                <li class="nav-item" style="padding: 10px;">
+                    <a class="nav-link active" aria-current="page">
+
+                        <button class="btn btn-primary bg-primary" type="button" data-bs-toggle="collapse"
+                            data-bs-target="#first" aria-expanded="false" aria-controls="collapseWidthExample">
+                            Χάρτης
+                        </button>
+                    </a>
+                </li>
+
+                <li class="nav-item" style="padding: 10px;">
+                    <a class="nav-link active" aria-current="page">
+
+                        <button class="btn btn-primary" type="button" data-bs-toggle="collapse" data-bs-target="#second"
+                            aria-expanded="false" aria-controls="collapseWidthExample">
+                            Λίστα αιτήσεων
+                        </button>
+                    </a>
+                </li>
+
+                <li class="nav-item" style="padding: 10px;">
+                    <a class="nav-link active" aria-current="page">
+
+                        <button class="btn btn-primary" type="button" data-bs-toggle="collapse" data-bs-target="#third"
+                            aria-expanded="false" aria-controls="collapseWidthExample">
+                            Επεξεργασία οριστικής υποβολής
+                        </button>
+                    </a>
+                </li>
+
+                <li class="nav-item" style="padding: 10px;">
+                    <a class="nav-link active" aria-current="page">
+
+                        <button class="btn btn-primary" type="button" data-bs-toggle="collapse" data-bs-target="#fourth"
+                            aria-expanded="false" aria-controls="collapseWidthExample">
+                            Στατιστικά
+                        </button>
+                    </a>
+                </li>
+
+                <li class="nav-item" style="padding: 10px;">
+                    <a class="nav-link active" aria-current="page">
+                        <form method="POST" action="/logout">
+                            <button type="submit">Αποσύνδεση</button>
+                        </form>
+                    </a>
+                </li>
+            </ul>
+        </div>
+
+        <div class="container col-lg-10">
+            <!-- ---------------FIRST-------------- -->
+
+            <div class="collapse collapse-horizontal" id="first">
+                <div id="map" style="height:600px; width: 100%;"></div>
+
+            </div>
+
+            <!-- ---------------SECOND-------------- -->
+            <div class="collapse collapse-horizontal" id="second">
+                <div class="container">
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
+
+                                <th scope="col">Όνομα αιτούμενου</th>
+                                <th scope="col">Ημερομηνία αίτησης</th>
+                                <th scope="col">Συντεταγμένες</th>
+                                <th scope="col">Ονομαστική Ισχύς</th>
+                                <th scope="col">Τύπος Σταθμού <button id="sortType"><i
+                                            class="bi bi-sort-alpha-down"></i></button></th>
+                                <th scope="col">Περιβαλλοντική έκθεση.pdf</th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+                            {{#each arrayOfStatements}}
+                            <tr>
+
+                                <td>{{this.name}}</th>
+                                <td>{{this.date}}</th>
+                                <td>{{this.location}}</th>
+                                <td>{{this.power}}</th>
+                                <td>{{this.type}}</th>
+                                <td><a href="">{{this.enviromental_pdf}}#</a></th>
+                            </tr>
+                            {{/each}}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- ---------------THIRD-------------- -->
+            <div class="collapse collapse-horizontal" id="third">
+                <div class="container">
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
+
+                                <th scope="col">Όνομα αιτούμενου</th>
+                                <th scope="col">Ημερομηνία αίτησης</th>
+                                <th scope="col">Επεξεργασία οριστικής υποβολής</th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+                            {{#each arrayOfStatements}}
+                            <tr>
+                                <td>{{this.name}}</th>
+                                <td>{{this.date}}</th>
+                                <td>
+                                    <form method="POST" action="/editStatement">
+                                        <input type="text" style="display: none;" name="id" value="{{this.id}}">
+
+                                        <button class="btn btn-primary" type="submit">
+                                            <i class="bi bi-plus-circle"></i>
+                                        </button>
+                                    </form>
+                                    </th>
+                            </tr>
+                            {{/each}}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- ---------------FOURTH-------------- -->
+
+            <div class="collapse collapse-horizontal" id="fourth">
+                <div class="container" id="chartdiv">
+                    <canvas id="chart">
+
+                    </canvas>
+                </div>
+
+            </div>
+        </div>
+
+
+
+    </div>
+
+    {{#each arrayOfMarkers}}
+
+    <h1 class="formarkers" style="">
+        {{this.location._latitude}}
+        {{this.location._longitude}}
+        {{this.status}}
+    </h1>
+
+    {{/each}}
+
+    </div>
+
+    <script async
+        src="https://maps.googleapis.com/maps/api/js?key=AIzaSyC7KrXS4DNFTMsNo52iy7sbiZfozozt1pk&callback=initMap">
+        </script>
+
+    <script>
+        let map;
+        console.log("initiation");
+        function initMap() {
+            map = new google.maps.Map(document.getElementById("map"), {
+                center: { lat: 37.983810, lng: 23.727539 },
+                zoom: 10,
+            });
+
+            let markers = document.getElementsByClassName("formarkers");
+
+            Array.from(markers).forEach((marker) => {
+                let array = marker.innerText.split(' ');
+
+                //in this array index 0 : latitude , index 1: longitude , index 2: status
+                var marker2 = new google.maps.Marker({
+                    position: new google.maps.LatLng(Number(array[0]), Number(array[1])),
+                    map: map,
+                    zoom: 5,
+                    icon: `images/${array[2]}.png`
+                });
+                marker.style.display = "none";
+            });
+
+        }
+
+        window.initMap = initMap;
+    </script>
+    <script>
+
+        console.log("data");
+        $.getJSON("/getDataForCharts", (data) => {
+            console.log(data);
+
+            var xValues = ["Αποδεκτές", "Υπο επεξεργασία", "Απορριφθείσες"];
+            
+            var accepted=0;
+            var pending=0;
+            var declined=0;
+
+            data.forEach((statement) => {
+                if(statement.status === 1){
+                    accepted++;
+                }else if(statement.status === 2){
+                    pending++;
+                }else if(statement.status === 3){
+                    declined++;
+                }
+            })
+            var yValues = [accepted,pending,declined];
+            var barColors = ["green", "yellow", "red"];
+
+            
+            new Chart("chart" , {
+                type:"pie",
+                data:{
+                    labels:xValues,
+                    datasets:[{
+                        backgroundColor:barColors,
+                        data:yValues
+                    }]
+                },
+                options:{
+                    title:{
+                        display:true,
+                        text: "Γράφημα κατανομής αιτήσεων"
+                    }
+                }
+            })
+        })
+
+    </script>
+</body>
+
+</html>
