@@ -4,5 +4,6 @@ const server = require('../controllers/general');
 
 //-----------------------GENERAL-------------------------
 router.get('/home', server.viewHome);
+router.post('/filter' , server.viewHomeFiltered);
 
 module.exports = router;

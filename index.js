@@ -1,4 +1,4 @@
-const routes = require('./server/routes/routes')
+const routes = require('./server/routes/routes');
 const express = require('express');
 const bodyParser= require("body-parser");
 const exphbs = require("express-handlebars");

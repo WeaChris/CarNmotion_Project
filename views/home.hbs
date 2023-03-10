@@ -5,43 +5,96 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ICARUS</title>
+    <title>CarNmotion Project</title>
 </head>
 
 <body>
-    <div class="container-fluid p-3 mb-2 bg-secondary text-white border border-secondary">
+    <div class="row">
+        <div class="d-flex flex-column flex-shrink-0 p-3 tex-white bg-dark col-lg-2">
+            
+            <hr>
+            <ul class="nav nav-pills flex-column mb-auto">
 
-        <div class="container">
+                <li class="nav-item" style="padding: 10px;">
+                    <a class="nav-link active" aria-current="page">
 
-            <!-- FORM FOR LOGING IN-->
-            <p class="text-info">Καλώς ήρθες στο σύστημα καταγραφής αιτήσεων εγκατάστασης της ρυθμιστικής αρχής Ενέργειας <a href="https://www.rae.gr/">PAE</a>.</p>
-            <p class="text-info">Η σύνδεση επιτρέπεται μόνο σε εξουσιοδοτημένους χρήστες της επιτροπής αξιολόγησης</p>
+                        <button class="btn btn-primary bg-primary" type="button" data-bs-toggle="collapse"
+                            data-bs-target="#first" aria-expanded="false" aria-controls="collapseWidthExample">
+                            Εμφανιση Δεδομενων
+                        </button>
+                    </a>
+                </li>
+                <li class="nav-item" style="padding: 10px;">
+                    <a class="nav-link active" aria-current="page">
+
+                        <button class="btn btn-primary bg-primary" type="button" data-bs-toggle="collapse"
+                            data-bs-target="#second" aria-expanded="false" aria-controls="collapseWidthExample">
+                            Εμφανιση Δεδομενων με φιλτραρισμα
+                        </button>
+                    </a>
+                </li>
+            </ul>
         </div>
 
-        <div class="container">
-            <form method="POST" , action="/login">
-                <div class="form-group"><label class="small mb-1" for="inputUsername">Username</label><input
-                        class="form-control py-4" id="floatingInput" name="email" type="text"
-                        placeholder="Enter username address" /></div>
-                <div class="form-group"><label class="small mb-1" for="inputPassword">Password</label><input
-                        class="form-control py-4" id="floatingInput" name="password" type="password"
-                        placeholder="Enter password" /></div>
-                <div class="form-group">
+        <div class="container col-lg-10">
+            {{!-- FIRST COLLAPSE BUTTON --}}
 
-                {{!-- {{#if req}}
-                    <div class="alert alert-danger" role="alert">
-                        {{req}}
-                    </div>
-                {{/if}} --}}
-                <div class="form-group d-flex align-items-center justify-content-between mt-4 mb-0"><button
-                        class="btn btn-primary" type="sumbit">Log
-                        In</button></div>
-            </form>
+            <div class="collapse collapse-horizontal" id="first">
+
+                <div class="container-fluid p-3 mb-2 bg-secondary text-white border border-secondary">
+                    <table class="table">
+                        <thead class="thead-dark">
+                            <tr>
+                                <th scope="col">ID</th>
+                                <th scope="col">Type</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {{#each dataFormed}}
+                            <tr>
+                                <td>{{this.id}}</td>
+                                <td>{{this.type}}</td>
+                            </tr>
+                            {{/each}}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="collapse collapse-horizontal" id="second">
+                {{#if filtered_data}}
+                
+                <div class="container-fluid p-3 mb-2 bg-secondary text-white border border-secondary">
+                    <table class="table">
+                        <thead class="thead-dark">
+                            <tr>
+                                <th scope="col">ID</th>
+                                <th scope="col">Type</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {{#each filtered_data}}
+                            <tr>
+                                <td>{{this.id}}</td>
+                                <td>{{this.type}}</td>
+                            </tr>
+                            {{/each}}
+                        </tbody>
+                    </table>
+                </div>
+
+                {{else}}
+                <form method="POST" action="/filter">
+                <input class="form-control py-4"
+                        id="floatingInput" name="filter" type="text" placeholder="Enter filter" />
+                    <button class="btn btn-primary" type=" sumbit">Εμφανιση</button>
+                </form>
+                
+                {{/if}}
+            </div>
         </div>
-
     </div>
 
-    </div>
 </body>
 
 </html>
