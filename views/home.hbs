@@ -11,7 +11,7 @@
 <body>
     <div class="row">
         <div class="d-flex flex-column flex-shrink-0 p-3 tex-white bg-dark col-lg-2">
-            
+
             <hr>
             <ul class="nav nav-pills flex-column mb-auto">
 
@@ -33,6 +33,24 @@
                         </button>
                     </a>
                 </li>
+                <li class="nav-item" style="padding: 10px;">
+                    <a class="nav-link active" aria-current="page">
+
+                        <button class="btn btn-primary bg-primary" type="button" data-bs-toggle="collapse"
+                            data-bs-target="#third" aria-expanded="false" aria-controls="collapseWidthExample">
+                            Αποστολή δεδομένων
+                        </button>
+                    </a>
+                </li>
+                <li class="nav-item" style="padding: 10px;">
+                    <a class="nav-link active" aria-current="page">
+
+                        <button class="btn btn-primary bg-primary" type="button" data-bs-toggle="collapse"
+                            data-bs-target="#fourth" aria-expanded="false" aria-controls="collapseWidthExample">
+                            Τελευταίος συγχρονισμός
+                        </button>
+                    </a>
+                </li>
             </ul>
         </div>
 
@@ -41,12 +59,15 @@
 
             <div class="collapse collapse-horizontal" id="first">
 
-                <div class="container-fluid p-3 mb-2 bg-secondary text-white border border-secondary">
+                <div class="container-fluid p-4 mb-2 bg-secondary text-white border border-secondary">
                     <table class="table">
                         <thead class="thead-dark">
                             <tr>
                                 <th scope="col">ID</th>
                                 <th scope="col">Type</th>
+                                <th scope="col">Properties Name</th>
+                                <th scope="col">Properties xid</th>
+                                <th scope="col">Properties Kinds</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -54,6 +75,10 @@
                             <tr>
                                 <td>{{this.id}}</td>
                                 <td>{{this.type}}</td>
+                                <td>{{this.properties_name}}</td>
+                                <td>{{this.properties_xid}}</td>
+                                <td>{{this.properties_kinds}}</td>
+
                             </tr>
                             {{/each}}
                         </tbody>
@@ -62,21 +87,27 @@
             </div>
 
             <div class="collapse collapse-horizontal" id="second">
-                {{#if filtered_data}}
-                
-                <div class="container-fluid p-3 mb-2 bg-secondary text-white border border-secondary">
+                {{#if filtered_data_Formed}}
+
+                <div class="container-fluid p-4 mb-2 bg-secondary text-white border border-secondary">
                     <table class="table">
                         <thead class="thead-dark">
                             <tr>
                                 <th scope="col">ID</th>
                                 <th scope="col">Type</th>
+                                <th scope="col">Properties Name</th>
+                                <th scope="col">Properties xid</th>
+                                <th scope="col">Properties Kinds</th>
                             </tr>
                         </thead>
                         <tbody>
-                            {{#each filtered_data}}
+                            {{#each filtered_data_Formed}}
                             <tr>
                                 <td>{{this.id}}</td>
                                 <td>{{this.type}}</td>
+                                <td>{{this.properties_name}}</td>
+                                <td>{{this.properties_xid}}</td>
+                                <td>{{this.properties_kinds}}</td>
                             </tr>
                             {{/each}}
                         </tbody>
@@ -85,12 +116,316 @@
 
                 {{else}}
                 <form method="POST" action="/filter">
-                <input class="form-control py-4"
-                        id="floatingInput" name="filter" type="text" placeholder="Enter filter" />
+                    <input class="form-control py-4" id="floatingInput" name="filter" type="text"
+                        placeholder="Enter filter" />
                     <button class="btn btn-primary" type=" sumbit">Εμφανιση</button>
                 </form>
-                
+
                 {{/if}}
+            </div>
+
+            <div class="collapse collapse-horizontal" id="third">
+                <div class="container-fluid p-4 mb-2 bg-secondary text-white border border-secondary">
+                    <div class="row align-items-center">
+                        {{#if filtered_data_Formed}}
+
+                        <div class="col-md-6">
+                            <div class="alert alert-dark" role="alert">
+                                <h2>Send data once</h2>
+                            </div>
+                            <form method="POST" action="/chooseProperties">
+
+                                <table class="table">
+                                    <thead>
+                                        <tr>
+                                            <th scope="col"><i class="bi bi-check2"></i></th>
+                                            <th scope="col">Properties</th>
+                                        </tr>
+                                    </thead>
+
+                                    <tbody>
+                                        <tr>
+                                            <td>
+                                                <input type="checkbox" class="form-check-input" name="type" id="check"
+                                                    value="type">
+                                            </td>
+                                            <td>
+                                                <label class="form-check-label">type</label>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                <input type="checkbox" class="form-check-input" name="id" id="check"
+                                                    value="id">
+                                            </td>
+                                            <td>
+                                                <label class="form-check-label">id</label>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                <input type="checkbox" class="form-check-input" name="geometry_type"
+                                                    id="check" value="geometry_type">
+                                            </td>
+                                            <td>
+                                                <label class="form-check-label">geometry_type</label>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                <input type="checkbox" class="form-check-input"
+                                                    name="geometry_coordinates" id="check" value="geometry_coordinates">
+                                            </td>
+                                            <td>
+                                                <label class="form-check-label">geometry_coordinates</label>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                <input type="checkbox" class="form-check-input" name="properties_xid"
+                                                    id="check" value="properties_xid">
+                                            </td>
+                                            <td>
+                                                <label class="form-check-label">properties_xid</label>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                <input type="checkbox" class="form-check-input" name="properties_name"
+                                                    id="check" value="properties_name">
+                                            </td>
+                                            <td>
+                                                <label class="form-check-label">properties_name</label>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                <input type="checkbox" class="form-check-input" name="properties_dist"
+                                                    id="check" value="properties_dist">
+                                            </td>
+                                            <td>
+                                                <label class="form-check-label">properties_dist</label>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                <input type="checkbox" class="form-check-input" name="properties_rate"
+                                                    id="check" value="properties_rate">
+                                            </td>
+                                            <td>
+                                                <label class="form-check-label">properties_rate</label>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                <input type="checkbox" class="form-check-input"
+                                                    name="properties_wikidata" id="check" value="properties_wikidata">
+                                            </td>
+                                            <td>
+                                                <label class="form-check-label">properties_wikidata</label>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                <input type="checkbox" class="form-check-input" name="properties_kinds"
+                                                    id="check" value="properties_kinds">
+                                            </td>
+                                            <td>
+                                                <label class="form-check-label">properties_kinds</label>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+
+                                </table>
+                                <button class="btn btn-primary" type="sumbit">Send latest filter data</button>
+                            </form>
+                        </div>
+                        <div class="col-md-6">
+
+                            <form method="POST" action="/activatingTimer">
+                                <div class="alert alert-dark" role="alert">
+                                    <h2>Schedule timer for sending data</h2>
+                                </div>
+
+                                <table class="table">
+                                    <thead>
+                                        <tr>
+                                            <th scope="col"><i class="bi bi-check2"></i></th>
+                                            <th scope="col">Properties</th>
+                                        </tr>
+                                    </thead>
+
+                                    <tbody>
+                                        <tr>
+                                            <td>
+                                                <input type="checkbox" class="form-check-input" name="type" id="check"
+                                                    value="type">
+                                            </td>
+                                            <td>
+                                                <label class="form-check-label">type</label>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                <input type="checkbox" class="form-check-input" name="id" id="check"
+                                                    value="id">
+                                            </td>
+                                            <td>
+                                                <label class="form-check-label">id</label>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                <input type="checkbox" class="form-check-input" name="geometry_type"
+                                                    id="check" value="geometry_type">
+                                            </td>
+                                            <td>
+                                                <label class="form-check-label">geometry_type</label>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                <input type="checkbox" class="form-check-input"
+                                                    name="geometry_coordinates" id="check" value="geometry_coordinates">
+                                            </td>
+                                            <td>
+                                                <label class="form-check-label">geometry_coordinates</label>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                <input type="checkbox" class="form-check-input" name="properties_xid"
+                                                    id="check" value="properties_xid">
+                                            </td>
+                                            <td>
+                                                <label class="form-check-label">properties_xid</label>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                <input type="checkbox" class="form-check-input" name="properties_name"
+                                                    id="check" value="properties_name">
+                                            </td>
+                                            <td>
+                                                <label class="form-check-label">properties_name</label>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                <input type="checkbox" class="form-check-input" name="properties_dist"
+                                                    id="check" value="properties_dist">
+                                            </td>
+                                            <td>
+                                                <label class="form-check-label">properties_dist</label>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                <input type="checkbox" class="form-check-input" name="properties_rate"
+                                                    id="check" value="properties_rate">
+                                            </td>
+                                            <td>
+                                                <label class="form-check-label">properties_rate</label>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                <input type="checkbox" class="form-check-input"
+                                                    name="properties_wikidata" id="check" value="properties_wikidata">
+                                            </td>
+                                            <td>
+                                                <label class="form-check-label">properties_wikidata</label>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                <input type="checkbox" class="form-check-input" name="properties_kinds"
+                                                    id="check" value="properties_kinds">
+                                            </td>
+                                            <td>
+                                                <label class="form-check-label">properties_kinds</label>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+
+                                </table>
+
+                                <input class="form-control py-4" id="floatingInput" name="timer" type="number"
+                                    placeholder="Enter timer in hours" />
+                                <button class="btn btn-primary" type=" sumbit">Ενεργοποίηση</button>
+                            </form>
+                        </div>
+
+                        {{else}}
+                        <div class="col-md-12">
+                            <div class="alert alert-danger" role="alert">
+                                To send data you will have to filter them first from the section above.
+                            </div>
+                        </div>
+
+                        {{/if}}
+
+                    </div>
+
+                </div>
+
+
+            </div>
+
+            <div class="collapse collapse-horizontal" id="fourth">
+                <div class="container-fluid p-4 mb-2 bg-secondary text-white border border-secondary">
+                    <div class="row align-items-center">
+                        {{#if latestReport}}
+                        <div class="col-md-6">
+
+                            <div class="row align-items-center">
+                                {{#latestReport}}
+                                <div class="col-sm-6">
+                                    <label for=""> Time :</label>
+                                </div>
+                                <div class="col-sm-6">
+                                    <label for="">{{this.time}} </label>
+                                </div>
+                            </div>
+                            <div class="row align-items-center">
+                                <div class="col-sm-6">
+                                    <label for=""> Filter :</label>
+                                </div>
+                                <div class="col-sm-6">
+                                    <label for="">{{this.filter}} </label>
+                                </div>
+                                {{/latestReport}}
+                            </div>
+                            <div class="row align-items-center">
+                                <div class="col-sm-12">
+                                    <table class="table">
+                                        <thead>
+                                            <tr>
+                                                <th scope="col">Selected properties</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {{#each searchingPattern}}
+                                            <tr>
+                                                <td>{{this}}</td>
+                                            </tr>
+                                            {{/each}}
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+
+
+                        </div>
+
+                        {{else}}
+                        <div class="alert alert-danger" role="alert">
+                            <h3>There is no sync</h3>
+                        </div>
+
+                        {{/if}}
+                    </div>
+                </div>
             </div>
         </div>
     </div>
