@@ -142,35 +142,41 @@ function comparingData(searchingPattern) {
     return new Promise(function(resolve,reject){
         var arraydata = [];
         
-    
-        latest_filtered_data.forEach(filtered_data => {
-            var data = {};
-            
-            searchingPattern.forEach(propertie => {
-    
-                if (propertie.includes(".")) {
-                    sequence = propertie.split(".");
-                    
-                    //var {type, ...newData} = filtered_data[sequence[0]]
-                    //if the property geometry or properties exists then i skip the initialization
-                    //Using ES6 javascript to pass a parameter as a string in order to create a new propertie in an existing object 
-                    if (!data[`${sequence[0]}`]) {
-                        data[`${sequence[0]}`] = {};
-                        data[`${sequence[0]}`][`${sequence[1]}`] = filtered_data[sequence[0]][sequence[1]];
-                    }else{
-                        data[`${sequence[0]}`][`${sequence[1]}`] = filtered_data[sequence[0]][sequence[1]];
+        try{
+            latest_filtered_data.forEach(filtered_data => {
+                var data = {};
+                
+                searchingPattern.forEach(propertie => {
+        
+                    if (propertie.includes(".")) {
+                        sequence = propertie.split(".");
+                        
+                        //var {type, ...newData} = filtered_data[sequence[0]]
+                        //if the property geometry or properties exists then i skip the initialization
+                        //Using ES6 javascript to pass a parameter as a string in order to create a new propertie in an existing object 
+                        if (!data[`${sequence[0]}`]) {
+                            data[`${sequence[0]}`] = {};
+                            data[`${sequence[0]}`][`${sequence[1]}`] = filtered_data[sequence[0]][sequence[1]];
+                        }else{
+                            data[`${sequence[0]}`][`${sequence[1]}`] = filtered_data[sequence[0]][sequence[1]];
+                        }
+        
+                        
+                    } else {
+                        
+                        data[`${propertie}`] = filtered_data[propertie];
                     }
-    
-                    
-                } else {
-                    
-                    data[`${propertie}`] = filtered_data[propertie];
-                }
-    
+        
+                })
+                arraydata.push(data);
             })
-            arraydata.push(data);
-        })
-        resolve(arraydata);
+            resolve(arraydata);
+        }catch{
+            (err)=>{
+                reject(err);
+            }
+        }
+        
     })
 
 }
